@@ -9,7 +9,7 @@ const Video = props => {
     })
   }, [])
 
-  return <video className="video" playsInline autoPlay ref={ref} />
+  return <video className="video-css" playsInline autoPlay ref={ref} />
 }
 
 export default Video

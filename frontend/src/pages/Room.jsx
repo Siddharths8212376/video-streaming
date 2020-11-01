@@ -85,7 +85,7 @@ export default function Room(props) {
 
   return (
     <div id="container">
-      <video className="video" muted ref={userVideo} autoPlay playsInline />
+      <video className="video-css" muted ref={userVideo} autoPlay playsInline />
       {peers.map((peer, index) => {
         console.log(peer)
         return <Video key={index} peer={peer} />
