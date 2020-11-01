@@ -2,7 +2,7 @@ POST HTTP://localhost:8000/api/users/
 Content-Type: application/json
 
 {
-    "email" : "ema17ley@ug.cust.ac.in",
-    "username": "Kitkat",
+    "email" : "rrk@cusat",
+    "username": "rrkk",
     "password": "abcxyz"
 }
