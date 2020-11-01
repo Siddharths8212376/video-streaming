@@ -10,9 +10,14 @@ export default function Home(props) {
   const [user, setUser] = useState(null)
   const [userType, setUserType] = useState('student')
   const [username, setUsername] = useState('')
-  const create = () => {
-    const id = uuid()
-    props.history.push(`/room/${id}`)
+  const [userSubjects, setUserSubjects] = useState([])
+  const create = ({ title, subjectCode }) => {
+    console.log(title, subjectCode)
+    const id = `subject/${subjectCode}`
+    props.history.push({
+      pathname: id,
+      data: {username}
+    })
   }
   const NavBar = ({contents, roomtype, uname}) => {
     return (
@@ -62,23 +67,31 @@ export default function Home(props) {
       <table className="table table-dark" style={{width:"20rem"}}>
         <thead>
           <tr>
-            <th scope="col">Subjects</th>
-            <th scope="col">Classrooms</th>
+            <th scope="col">Subject</th>
+            <th scope="col">Subject Code</th>
+            <th scope="col">Teacher</th>
+            <th scope="col">Classroom</th>
           </tr>
         </thead>
         <tbody>
-          <tr>
+          {/*<tr>
             <th scope="row">Subject 1</th>
             <td><button className="btn btn-primary">Join Class</button></td> 
           </tr>
-           <tr>
+          <tr>
             <th scope="row">Subject 2</th>
             <td><button className="btn btn-primary">Join Class</button></td> 
           </tr>
           <tr>
             <th scope="row">Subject 3</th>
             <td><button className="btn btn-primary">Join Class</button></td> 
-          </tr>
+          </tr> */}
+          {userSubjects.map(subject => <tr>
+            <th scope="row">{subject.title}</th>
+            <td>{subject.subjectCode}</td>
+            <td>{subject.teacher}</td>
+            <td><button className="btn btn-primary" onClick={() => {create({title: subject.title, subjectCode: subject.subjectCode})}}>Join</button></td>
+          </tr>)}
         </tbody>
       </table>
     </div>
@@ -96,7 +109,7 @@ export default function Home(props) {
         </tr>
       </thead>
       <tbody>
-        <tr>
+        {/* <tr>
           <th scope="row">Subject 1</th>
           <td><button className="btn btn-primary" onClick={create}>Create Class</button></td> 
         </tr>
@@ -107,7 +120,13 @@ export default function Home(props) {
         <tr>
           <th scope="row">Subject 3</th>
           <td><button className="btn btn-primary" onClick={create}>Create Class</button></td> 
-        </tr>
+        </tr> */}
+          {userSubjects.map(subject => <tr>
+            <th scope="row">{subject.title}</th>
+            <td>{subject.subjectCode}</td>
+            {/* <td>{subject.teacher}</td> */}
+            <td><button className="btn btn-primary" onClick={() => {create({title: subject.title, subjectCode: subject.subjectCode})}}>Create Class</button></td>
+          </tr>)}
       </tbody>
     </table>
   </div>
@@ -123,6 +142,7 @@ export default function Home(props) {
       const type = user.data.type 
       setUserType(type)
       setUsername(user.data.username)
+      setUserSubjects(user.data.subjects)
     } catch (exception) {
       console.log(exception)
       console.log('wrong credentials')

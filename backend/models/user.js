@@ -12,7 +12,14 @@ const userSchema = new mongoose.Schema({
         unique: true
     },
     passwordHash: String,
-    type: String
+    type: String,
+    subjects: [
+        {
+            title: {type: String, required: true},
+            subjectCode: {type: Number, required: true},
+            teacher: {type: String, required: true}
+        }
+    ]
 })
 userSchema.set('toJSON', {
     transform: (document, returnedObject) => {

@@ -4,6 +4,7 @@ import { BrowserRouter as Router, Switch, Route } from 'react-router-dom'
 
 import Home from './pages/Home'
 import Room from './pages/Room'
+import Subject from './pages/Subject'
 
 function App() {
   return (
@@ -11,6 +12,7 @@ function App() {
       <Switch>
         <Route path="/" exact component={Home} />
         <Route path="/room/:roomId" component={Room} />
+        <Route path="/subject/:subId" component={Subject} />
       </Switch>
     </Router>
   )

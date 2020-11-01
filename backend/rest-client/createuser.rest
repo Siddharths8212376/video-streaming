@@ -2,7 +2,11 @@ POST HTTP://localhost:8000/api/users/
 Content-Type: application/json
 
 {
-    "email" : "rrk@cusat",
-    "username": "rrkk",
-    "password": "abcxyz"
+    "email" : "student1@cusat",
+    "username": "student1",
+    "password": "abcxyz",
+    "subjects": [
+        {"title": "ANN", "subjectCode": "1605", "teacher": "teacher3"},
+        {"title": "ACN", "subjectCode": "1604", "teacher": "teacher1"}
+    ]
 }
