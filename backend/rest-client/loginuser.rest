@@ -1,0 +1,7 @@
+POST HTTP://localhost:8000/api/login/
+Content-Type: application/json
+
+{
+    "email": "ray17norm@ug.cusat.ac.in",
+    "password": "abcxyz"
+}
