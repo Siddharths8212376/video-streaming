@@ -14,7 +14,7 @@ var urlEncodedParser = bodyParser.urlencoded({ extended: false })
 const users = {}
 const socketToRoom = {}
 const messages = {
-  room1: [],
+  1605: [],
   room2: [],
   room3: [],
 }
@@ -105,7 +105,7 @@ app.post('/api/users', jsonParser, async (request, response) => {
     username: body.username,
     passwordHash,
     type: 'student',
-    subjects: body.subjects
+    subjects: body.subjects,
   })
   const savedUser = await user.save()
   response.json(savedUser)
@@ -116,8 +116,15 @@ app.post('/api/login', jsonParser, async (request, response) => {
   const passowordCorrect =
     user === null ? false : await bcrypt.compare(body.password, user.passwordHash)
   if (!(user && passowordCorrect)) {
-    return response.status(401).json({ error: 'invalid email or password '})
+    return response.status(401).json({ error: 'invalid email or password ' })
   }
-  response.status(200).send({ username: user.username, email: user.email, type: user.type, subjects: user.subjects})
+  response
+    .status(200)
+    .send({
+      username: user.username,
+      email: user.email,
+      type: user.type,
+      subjects: user.subjects,
+    })
 })
 server.listen(8000, () => console.log('server is running on port 8000'))
