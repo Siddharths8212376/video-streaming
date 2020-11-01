@@ -26,7 +26,7 @@ export default function Subject(props) {
 
   useEffect(() => {
     socketRef.current = io.connect('http://localhost:8000/')
-    socketRef.current.emit('join server', props.location.data.username)
+    socketRef.current.emit('join server', props.location.state.detail)
     socketRef.current.emit('join room', props.match.params.subId, messages =>
       roomJoinCallback(messages, props.match.params.subId)
     )
@@ -70,7 +70,7 @@ export default function Subject(props) {
     const payload = {
       content: message,
       to: props.match.params.subId,
-      sender: props.location.data.username,
+      sender: props.location.state.detail,
       chatName: props.match.params.subId,
     }
 
@@ -79,7 +79,7 @@ export default function Subject(props) {
     console.log(messages.subId)
     const newMessages = immer(messages, draft => {
       draft[props.match.params.subId].push({
-        sender: props.location.data.username,
+        sender: props.location.state.detail,
         content: message,
       })
     })
@@ -100,7 +100,7 @@ export default function Subject(props) {
   return (
     <div>
       <NavBar
-        contents={`Welcome to ${props.match.params.subId}, ${props.location.data.username}!`}
+        contents={`Welcome to ${props.match.params.subId}, ${props.location.state.detail}!`}
       />
       <div className="container-fluid " style={{ backgroundColor: 'lightblue' }}>
         <div className="row">

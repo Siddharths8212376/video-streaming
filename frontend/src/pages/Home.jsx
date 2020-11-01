@@ -1,10 +1,9 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { v1 as uuid } from 'uuid'
 import axios from 'axios'
 
-import NavBar from '../components/NavBar'
-
 const baseUrl = 'http://localhost:8000/api/login'
+let token = null
 
 export default function Home(props) {
   const [email, setEmail] = useState('')
@@ -13,16 +12,50 @@ export default function Home(props) {
   const [userType, setUserType] = useState('student')
   const [username, setUsername] = useState('')
   const [userSubjects, setUserSubjects] = useState([])
+  const setToken = newToken => {
+    token = `bearer ${newToken}`
+  }
+  useEffect(() => {
+    const loggedUserJSON = window.localStorage.getItem('loggedStreamer')
+    console.log(loggedUserJSON)
+    if (loggedUserJSON) {
+      const user = JSON.parse(loggedUserJSON)
+      setUser(user)
+      const type = user.data.type 
+      setUserType(type)
+      setUsername(user.data.username)
+      setUserSubjects(user.data.subjects)
+      setToken(user.data.token)
+      console.log('type: ', userType)
+      console.log('user: ', username) 
+      console.log('subjects:', userSubjects)
+      console.log('token: ', token)
+    }
+  }, [])
   const create = ({ title, subjectCode }) => {
     console.log(title, subjectCode)
     const id = `subject/${subjectCode}`
     props.history.push({
       pathname: id,
-      data: { username },
+      data: {username},
+      state: { detail: username }
     })
   }
-
-  const NavBarLogin = ({ contents }) => {
+  const NavBar = ({contents, roomtype, uname}) => {
+    return (
+    <nav className="navbar navbar-dark bg-dark" style={{color:"white"}}>
+      <div>{contents} {roomtype}'s portal {uname}!</div>
+      <div><button className="btn btn-secondary" onClick={logOut}>Log Out</button></div>
+      </nav>
+  )}
+  const logOut = () => {
+    window.localStorage.removeItem('loggedStreamer')
+    setUser(null)
+    setUsername('')
+    setToken(null)
+    setUserSubjects([])
+  }
+  const NavBarLogin = ({contents}) => {
     return (
       <nav
         className="navbar navbar-dark bg-dark"
@@ -77,7 +110,7 @@ export default function Home(props) {
 
   const studentLandingPage = () => (
     <div style={{ backgroundColor: 'lightblue' }}>
-      <NavBar contents={`Welcome to ${username}'s ${userType}`} />
+      <NavBar contents="Welcome to " uname={username} roomtype={userType} />
       <div
         style={{
           width: '100%',
@@ -106,7 +139,7 @@ export default function Home(props) {
                   <button
                     className="btn btn-primary"
                     onClick={() => {
-                      create({ title: subject.title, subjectCode: subject.subjectCode })
+                      create({title: subject.title, subjectCode: subject.subjectCode, uname: username})
                     }}
                   >
                     Join
@@ -184,6 +217,11 @@ export default function Home(props) {
       setUserType(type)
       setUsername(user.data.username)
       setUserSubjects(user.data.subjects)
+      window.localStorage.setItem(
+        'loggedStreamer', JSON.stringify(user)
+      )
+      setToken(user.token)
+      console.log(user)
     } catch (exception) {
       console.log(exception)
       console.log('wrong credentials')
