@@ -88,6 +88,10 @@ io.on('connection', socket => {
   //   users = users.filter(usr => usr.id !== socket.id)
   //   socketIo.emit('new user', users)
   // })
+  /******************************************************************************/
+  socket.on('canvas-data', ({ data, to }) => {
+    socket.broadcast.emit('canvas-data', data)
+  })
 })
 
 app.get('/', (request, response) => {
@@ -126,14 +130,12 @@ app.post('/api/login', jsonParser, async (request, response) => {
     id: user._id,
   }
   const token = jwt.sign(userForToken, SECRET)
-  response
-    .status(200)
-    .send({
-      token,
-      username: user.username,
-      email: user.email,
-      type: user.type,
-      subjects: user.subjects,
-    })
+  response.status(200).send({
+    token,
+    username: user.username,
+    email: user.email,
+    type: user.type,
+    subjects: user.subjects,
+  })
 })
 server.listen(8000, () => console.log('server is running on port 8000'))

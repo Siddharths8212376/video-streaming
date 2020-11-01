@@ -4,6 +4,7 @@ import immer from 'immer'
 import NavBar from '../components/NavBar'
 import ChatBubble from '../components/ChatBubble'
 import VideoPlayer from '../components/VideoPlayer'
+import Whiteboard from '../components/Whiteboard'
 
 export default function Subject(props) {
   const [active, setActive] = useState('Video')
@@ -11,10 +12,10 @@ export default function Subject(props) {
   const [message, setMessage] = useState('')
   const socketRef = useRef()
 
-  console.log('MESSAGES:', messages)
+  //   console.log('MESSAGES:', messages)
 
   const roomJoinCallback = (incomingMessages, room) => {
-    console.log('incomingMessages', incomingMessages)
+    // console.log('incomingMessages', incomingMessages)
     setMessages(incomingMessages)
   }
 
@@ -38,7 +39,7 @@ export default function Subject(props) {
     })
   })
 
-  const options = ['Video', 'Powerpoint', 'Whiteboard']
+  const options = ['Video', 'Whiteboard', 'Powerpoint']
 
   const buttonList = () => {
     return options.map(option => {
@@ -95,8 +96,8 @@ export default function Subject(props) {
     autoplay: true,
     controls: true,
     preload: 'none',
-    height: '480px',
-    width: '1080px',
+    height: '600px',
+    width: '1000px',
     sources: [
       {
         src: 'http://ec2-13-235-70-74.ap-south-1.compute.amazonaws.com/hls/test_src.m3u8',
@@ -125,6 +126,13 @@ export default function Subject(props) {
       },
     ],
   }
+  //   ['Video', 'Powerpoint', 'Whiteboard']
+  const mainContent = () => {
+    if (active === 'Video') return <VideoPlayer {...videoJsOptions} />
+    else if (active === 'Whiteboard')
+      return <Whiteboard room={props.match.params.subId} socketRef={socketRef} />
+    else if (active === 'Powerpoint') return <div>POWERPOINT</div>
+  }
 
   return (
     <div>
@@ -135,7 +143,8 @@ export default function Subject(props) {
         <div className="row">
           <div className="list-group col-3 py-5">{buttonList()}</div>
           <div className="col-6">
-            <VideoPlayer {...videoJsOptions} />
+            {mainContent()}
+            {/* <Whiteboard room={props.match.params.subId} socketRef={socketRef} /> */}
           </div>
         </div>
         <div className="row mt-4">
