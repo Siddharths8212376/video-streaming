@@ -12,6 +12,12 @@ export default function Home(props) {
   const [userType, setUserType] = useState('student')
   const [username, setUsername] = useState('')
   const [userSubjects, setUserSubjects] = useState([])
+
+  const createP2PRoom = () => {
+    const id = uuid()
+    props.history.push(`/room/${id}`)
+  }
+
   const setToken = newToken => {
     token = `bearer ${newToken}`
   }
@@ -21,13 +27,13 @@ export default function Home(props) {
     if (loggedUserJSON) {
       const user = JSON.parse(loggedUserJSON)
       setUser(user)
-      const type = user.data.type 
+      const type = user.data.type
       setUserType(type)
       setUsername(user.data.username)
       setUserSubjects(user.data.subjects)
       setToken(user.data.token)
       console.log('type: ', userType)
-      console.log('user: ', username) 
+      console.log('user: ', username)
       console.log('subjects:', userSubjects)
       console.log('token: ', token)
     }
@@ -37,17 +43,24 @@ export default function Home(props) {
     const id = `subject/${subjectCode}`
     props.history.push({
       pathname: id,
-      data: {username},
-      state: { detail: username }
+      data: { username },
+      state: { detail: username },
     })
   }
-  const NavBar = ({contents, roomtype, uname}) => {
+  const NavBar = ({ contents, roomtype, uname }) => {
     return (
-    <nav className="navbar navbar-dark bg-dark" style={{color:"white"}}>
-      <div>{contents} {roomtype}'s portal {uname}!</div>
-      <div><button className="btn btn-secondary" onClick={logOut}>Log Out</button></div>
+      <nav className="navbar navbar-dark bg-dark" style={{ color: 'white' }}>
+        <div>
+          {contents} {roomtype}'s portal {uname}!
+        </div>
+        <div>
+          <button className="btn btn-secondary" onClick={logOut}>
+            Log Out
+          </button>
+        </div>
       </nav>
-  )}
+    )
+  }
   const logOut = () => {
     window.localStorage.removeItem('loggedStreamer')
     setUser(null)
@@ -55,7 +68,7 @@ export default function Home(props) {
     setToken(null)
     setUserSubjects([])
   }
-  const NavBarLogin = ({contents}) => {
+  const NavBarLogin = ({ contents }) => {
     return (
       <nav
         className="navbar navbar-dark bg-dark"
@@ -139,7 +152,11 @@ export default function Home(props) {
                   <button
                     className="btn btn-primary"
                     onClick={() => {
-                      create({title: subject.title, subjectCode: subject.subjectCode, uname: username})
+                      create({
+                        title: subject.title,
+                        subjectCode: subject.subjectCode,
+                        uname: username,
+                      })
                     }}
                   >
                     Join
@@ -147,6 +164,21 @@ export default function Home(props) {
                 </td>
               </tr>
             ))}
+            <tr>
+              <th scope="row">Private Channel</th>
+              <td>-</td>
+              <td>-</td>
+              <td>
+                <button
+                  className="btn btn-primary"
+                  onClick={() => {
+                    createP2PRoom()
+                  }}
+                >
+                  Join
+                </button>
+              </td>
+            </tr>
           </tbody>
         </table>
       </div>
@@ -217,9 +249,7 @@ export default function Home(props) {
       setUserType(type)
       setUsername(user.data.username)
       setUserSubjects(user.data.subjects)
-      window.localStorage.setItem(
-        'loggedStreamer', JSON.stringify(user)
-      )
+      window.localStorage.setItem('loggedStreamer', JSON.stringify(user))
       setToken(user.token)
       console.log(user)
     } catch (exception) {

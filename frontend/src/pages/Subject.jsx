@@ -3,25 +3,19 @@ import io from 'socket.io-client'
 import immer from 'immer'
 import NavBar from '../components/NavBar'
 import ChatBubble from '../components/ChatBubble'
-const initialMessageState = {
-  1605: [],
-  room2: [],
-  room3: [],
-}
+import VideoPlayer from '../components/VideoPlayer'
 
 export default function Subject(props) {
   const [active, setActive] = useState('Video')
-  const [messages, setMessages] = useState(initialMessageState)
+  const [messages, setMessages] = useState([])
   const [message, setMessage] = useState('')
   const socketRef = useRef()
 
-  console.log('MESSAGES:', messages[1605])
+  console.log('MESSAGES:', messages)
 
   const roomJoinCallback = (incomingMessages, room) => {
-    const newMessages = immer(messages, draft => {
-      draft[room] = incomingMessages
-    })
-    setMessages(newMessages)
+    console.log('incomingMessages', incomingMessages)
+    setMessages(incomingMessages)
   }
 
   useEffect(() => {
@@ -32,14 +26,15 @@ export default function Subject(props) {
     )
 
     socketRef.current.on('new message', ({ content, sender, chatName }) => {
-      setMessages(messages => {
-        const newMessages = immer(messages, draft => {
-          if (draft[chatName]) {
-            draft[chatName].push({ content, sender })
-          } else draft[chatName] = [{ content, sender }]
-        })
-        return newMessages
-      })
+      //   setMessages(messages => {
+      //     const newMessages = immer(messages, draft => {
+      //       if (draft[chatName]) {
+      //         draft[chatName].push({ content, sender })
+      //       } else draft[chatName] = [{ content, sender }]
+      //     })
+      //     return newMessages
+      //   })
+      setMessages([...messages, { content, sender }])
     })
   })
 
@@ -75,26 +70,60 @@ export default function Subject(props) {
     }
 
     socketRef.current.emit('send message', payload)
-    let subId = props.match.params.subId
-    console.log(messages.subId)
-    const newMessages = immer(messages, draft => {
-      draft[props.match.params.subId].push({
-        sender: props.location.state.detail,
-        content: message,
-      })
-    })
+    console.log('Messages: ', messages)
+    // const newMessages = immer(messages, draft => {
+    //   draft[props.match.params.subId].push({
+    //     sender: props.location.state.detail,
+    //     content: message,
+    //   })
+    // })
+    setMessages([...messages, { sender: props.location.state.detail, content: message }])
     setMessage('')
-    setMessages(newMessages)
   }
 
   const chatText = () => {
     return (
       <>
-        {messages[props.match.params.subId].map((message, idx) => (
+        {messages.map((message, idx) => (
           <ChatBubble key={idx} message={message} />
         ))}
       </>
     )
+  }
+
+  const videoJsOptions = {
+    autoplay: true,
+    controls: true,
+    preload: 'none',
+    height: '480px',
+    width: '1080px',
+    sources: [
+      {
+        src: 'http://ec2-13-235-70-74.ap-south-1.compute.amazonaws.com/hls/test_src.m3u8',
+        type: 'application/x-mpegURL',
+        label: 'src',
+        res: '1080',
+      },
+      {
+        src: 'http://ec2-13-235-70-74.ap-south-1.compute.amazonaws.com/hls/test_mid.m3u8',
+        type: 'application/x-mpegURL',
+        label: 'mid',
+        res: '480',
+      },
+      {
+        src:
+          'http://ec2-13-235-70-74.ap-south-1.compute.amazonaws.com/hls/test_high.m3u8',
+        type: 'application/x-mpegURL',
+        label: 'high',
+        res: '720',
+      },
+      {
+        src: 'http://ec2-13-235-70-74.ap-south-1.compute.amazonaws.com/hls/test_low.m3u8',
+        type: 'application/x-mpegURL',
+        label: 'low',
+        res: '360',
+      },
+    ],
   }
 
   return (
@@ -105,7 +134,9 @@ export default function Subject(props) {
       <div className="container-fluid " style={{ backgroundColor: 'lightblue' }}>
         <div className="row">
           <div className="list-group col-3 py-5">{buttonList()}</div>
-          <div className="blk col-6"></div>
+          <div className="col-6">
+            <VideoPlayer {...videoJsOptions} />
+          </div>
         </div>
         <div className="row mt-4">
           <div className="col-3" />
@@ -113,7 +144,6 @@ export default function Subject(props) {
         </div>
         <div className="row mt-4">
           <div className="col-3" />
-
           <textarea
             className="textarea col-6"
             value={message}

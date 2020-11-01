@@ -16,8 +16,9 @@ const users = {}
 const socketToRoom = {}
 const messages = {
   1605: [],
-  room2: [],
-  room3: [],
+  1604: [],
+  1603: [],
+  1602: [],
 }
 
 app.use(cors())
@@ -106,7 +107,7 @@ app.post('/api/users', jsonParser, async (request, response) => {
     username: body.username,
     passwordHash,
     type: 'teacher',
-    subjects: body.subjects
+    subjects: body.subjects,
   })
   const savedUser = await user.save()
   response.json(savedUser)
@@ -122,9 +123,17 @@ app.post('/api/login', jsonParser, async (request, response) => {
 
   const userForToken = {
     email: user.email,
-    id: user._id
+    id: user._id,
   }
   const token = jwt.sign(userForToken, SECRET)
-  response.status(200).send({ token, username: user.username, email: user.email, type: user.type, subjects: user.subjects})
+  response
+    .status(200)
+    .send({
+      token,
+      username: user.username,
+      email: user.email,
+      type: user.type,
+      subjects: user.subjects,
+    })
 })
 server.listen(8000, () => console.log('server is running on port 8000'))

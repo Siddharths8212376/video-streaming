@@ -12,6 +12,7 @@
 }
 
 .blk {
+  margin-top: 10px;
   background-color: black;
   height: 300px;
   width: 50%;
@@ -28,7 +29,8 @@
   width: 400px;
   height: 100px;
   border-radius: 10px;
-  margin-top: 10px;
+  margin-top: 5px;
+  margin-bottom: 100px;
   padding-left: 10px;
   padding-top: 10px;
   font-size: 17px;
@@ -51,7 +53,8 @@
   border-radius: 10px;
   padding-bottom: 10px;
   margin-top: 25px;
-  color: white;
+  color: black;
+  background-color: white;
 }
 
 .video-css {
