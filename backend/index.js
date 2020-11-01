@@ -7,11 +7,12 @@ const io = socket(server)
 const bcrypt = require('bcrypt')
 const User = require('./models/user')
 const bodyParser = require('body-parser')
+const cors = require('cors')
 const users = {}
 var jsonParser = bodyParser.json()
 var urlEncodedParser = bodyParser.urlencoded({ extended: false })
 const socketToRoom = {}
-
+app.use(cors())
 io.on('connection', socket => {
   socket.on('join room', roomID => {
     if (users[roomID]) { const length = users[roomID].length
@@ -69,7 +70,7 @@ app.post('/api/users', jsonParser, async (request, response) => {
     email: body.email,
     username: body.username,
     passwordHash,
-    type: 'student'
+    type: 'teacher'
   })
   const savedUser = await user.save()
   response.json(savedUser)
@@ -79,8 +80,8 @@ app.post('/api/login', jsonParser, async (request, response) => {
   const user = await User.findOne({ email: body.email })
   const passowordCorrect = user === null ? false : await bcrypt.compare(body.password, user.passwordHash)
   if (!(user && passowordCorrect)) {
-    return response.status(401).json({ error: 'invalid username or password '})
+    return response.status(401).json({ error: 'invalid email or password '})
   }
-  response.status(200).send({ username: user.username, email: user.email })
+  response.status(200).send({ username: user.username, email: user.email, type: user.type })
 })
 server.listen(8000, () => console.log('server is running on port 8000'))
