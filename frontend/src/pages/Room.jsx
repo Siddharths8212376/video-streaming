@@ -22,7 +22,7 @@ export default function Room(props) {
       .getUserMedia({ video: videoConstraints, audio: true })
       .then(stream => {
         userVideo.current.srcObject = stream
-        socketRef.current.emit('join room', roomId)
+        socketRef.current.emit('join p2p room', roomId)
         socketRef.current.on('all users', users => {
           const tempPeers = []
           users.forEach(userId => {
