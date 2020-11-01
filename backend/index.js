@@ -15,7 +15,7 @@ var urlEncodedParser = bodyParser.urlencoded({ extended: false })
 const users = {}
 const socketToRoom = {}
 const messages = {
-  room1: [],
+  1605: [],
   room2: [],
   room3: [],
 }
@@ -117,8 +117,9 @@ app.post('/api/login', jsonParser, async (request, response) => {
   const passowordCorrect =
     user === null ? false : await bcrypt.compare(body.password, user.passwordHash)
   if (!(user && passowordCorrect)) {
-    return response.status(401).json({ error: 'invalid email or password '})
+    return response.status(401).json({ error: 'invalid email or password ' })
   }
+
   const userForToken = {
     email: user.email,
     id: user._id

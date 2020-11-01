@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import { v1 as uuid } from 'uuid'
 import axios from 'axios'
+
 const baseUrl = 'http://localhost:8000/api/login'
 let token = null
 
@@ -56,91 +57,122 @@ export default function Home(props) {
   }
   const NavBarLogin = ({contents}) => {
     return (
-    <nav className="navbar navbar-dark bg-dark" style={{justifyContent:"center", color:"white"}}>{contents}</nav>
-  )}
+      <nav
+        className="navbar navbar-dark bg-dark"
+        style={{ justifyContent: 'center', color: 'white' }}
+      >
+        {contents}
+      </nav>
+    )
+  }
   const loginForm = () => (
-    <div style={{backgroundColor:'lightblue'}}>
-      <NavBarLogin contents="Join Classroom"/>
-    <div style={{width:"100%", height:"92vh", display:"flex", justifyContent:'center', alignItems:'center'}}> 
-      <div className="card" style={{width: "18rem", padding: "25px"}}>
-    <form onSubmit={handleLogin}>
-    <div className="form-group" >
-      <label for="email">Email</label>
-        <input
-        className="form-control"
-        type="email"
-        value={email}
-        name="Email"
-        onChange={({ target }) => setEmail(target.value)}
-      />
+    <div style={{ backgroundColor: 'lightblue' }}>
+      <NavBarLogin contents="Join Classroom" />
+      <div
+        style={{
+          width: '100%',
+          height: '92vh',
+          display: 'flex',
+          justifyContent: 'center',
+          alignItems: 'center',
+        }}
+      >
+        <div className="card" style={{ width: '18rem', padding: '25px' }}>
+          <form onSubmit={handleLogin}>
+            <div className="form-group">
+              <label for="email">Email</label>
+              <input
+                className="form-control"
+                type="email"
+                value={email}
+                name="Email"
+                onChange={({ target }) => setEmail(target.value)}
+              />
+            </div>
+            <div className="form-group">
+              <label for="password">Password</label>
+              <input
+                type="password"
+                className="form-control"
+                value={password}
+                name="Password"
+                onChange={({ target }) => setPassword(target.value)}
+              />
+            </div>
+            <button className="btn btn-primary" type="submit">
+              login
+            </button>
+          </form>
+        </div>
+      </div>
     </div>
-    <div className="form-group" >
-      <label for="password">Password</label>
-        <input
-        type="password"
-        className="form-control"
-        value={password}
-        name="Password"
-        onChange={({ target }) => setPassword(target.value)}
-      />
-    </div>
-    <button className="btn btn-primary" type="submit">login</button>
-  </form>   
-  </div>
-  </div>
-  </div>
   )
 
   const studentLandingPage = () => (
-    <div style={{backgroundColor:'lightblue'}}>
+    <div style={{ backgroundColor: 'lightblue' }}>
       <NavBar contents="Welcome to " uname={username} roomtype={userType} />
-   <div style={{width:"100%", height:"92vh", display:"flex", justifyContent:'center', alignItems:'center'}}> 
-      <table className="table table-dark" style={{width:"20rem"}}>
-        <thead>
-          <tr>
-            <th scope="col">Subject</th>
-            <th scope="col">Subject Code</th>
-            <th scope="col">Teacher</th>
-            <th scope="col">Classroom</th>
-          </tr>
-        </thead>
-        <tbody>
-          {/*<tr>
-            <th scope="row">Subject 1</th>
-            <td><button className="btn btn-primary">Join Class</button></td> 
-          </tr>
-          <tr>
-            <th scope="row">Subject 2</th>
-            <td><button className="btn btn-primary">Join Class</button></td> 
-          </tr>
-          <tr>
-            <th scope="row">Subject 3</th>
-            <td><button className="btn btn-primary">Join Class</button></td> 
-          </tr> */}
-          {userSubjects.map(subject => <tr>
-            <th scope="row">{subject.title}</th>
-            <td>{subject.subjectCode}</td>
-            <td>{subject.teacher}</td>
-            <td><button className="btn btn-primary" onClick={() => {create({title: subject.title, subjectCode: subject.subjectCode, uname: username})}}>Join</button></td>
-          </tr>)}
-        </tbody>
-      </table>
-    </div>
+      <div
+        style={{
+          width: '100%',
+          height: '92vh',
+          display: 'flex',
+          justifyContent: 'center',
+          alignItems: 'center',
+        }}
+      >
+        <table className="table table-dark" style={{ width: '20rem' }}>
+          <thead>
+            <tr>
+              <th scope="col">Subject</th>
+              <th scope="col">Subject Code</th>
+              <th scope="col">Teacher</th>
+              <th scope="col">Classroom</th>
+            </tr>
+          </thead>
+          <tbody>
+            {userSubjects.map(subject => (
+              <tr>
+                <th scope="row">{subject.title}</th>
+                <td>{subject.subjectCode}</td>
+                <td>{subject.teacher}</td>
+                <td>
+                  <button
+                    className="btn btn-primary"
+                    onClick={() => {
+                      create({title: subject.title, subjectCode: subject.subjectCode, uname: username})
+                    }}
+                  >
+                    Join
+                  </button>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
     </div>
   )
   const teacherLandingPage = () => (
-    <div style={{backgroundColor:"lightblue"}}>
-    <NavBar contents="Welcome to " uname={username} roomtype={userType}/>
- <div style={{width:"100%", height:"92vh", display:"flex", justifyContent:'center', alignItems:'center'}}> 
-    <table className="table table-dark" style={{width: "20rem"}}>
-      <thead>
-        <tr>
-          <th scope="col">Subjects</th>
-          <th scope="col">Classrooms</th>
-        </tr>
-      </thead>
-      <tbody>
-        {/* <tr>
+    <div style={{ backgroundColor: 'lightblue' }}>
+      <NavBar contents="Welcome to " uname={username} roomtype={userType} />
+      <div
+        style={{
+          width: '100%',
+          height: '92vh',
+          display: 'flex',
+          justifyContent: 'center',
+          alignItems: 'center',
+        }}
+      >
+        <table className="table table-dark" style={{ width: '20rem' }}>
+          <thead>
+            <tr>
+              <th scope="col">Subjects</th>
+              <th scope="col">Classrooms</th>
+            </tr>
+          </thead>
+          <tbody>
+            {/* <tr>
           <th scope="row">Subject 1</th>
           <td><button className="btn btn-primary" onClick={create}>Create Class</button></td> 
         </tr>
@@ -152,25 +184,36 @@ export default function Home(props) {
           <th scope="row">Subject 3</th>
           <td><button className="btn btn-primary" onClick={create}>Create Class</button></td> 
         </tr> */}
-          {userSubjects.map(subject => <tr>
-            <th scope="row">{subject.title}</th>
-            <td>{subject.subjectCode}</td>
-            {/* <td>{subject.teacher}</td> */}
-            <td><button className="btn btn-primary" onClick={() => {create({title: subject.title, subjectCode: subject.subjectCode})}}>Create Class</button></td>
-          </tr>)}
-      </tbody>
-    </table>
-  </div>
-  </div>
+            {userSubjects.map(subject => (
+              <tr>
+                <th scope="row">{subject.title}</th>
+                <td>{subject.subjectCode}</td>
+                {/* <td>{subject.teacher}</td> */}
+                <td>
+                  <button
+                    className="btn btn-primary"
+                    onClick={() => {
+                      create({ title: subject.title, subjectCode: subject.subjectCode })
+                    }}
+                  >
+                    Create Class
+                  </button>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+    </div>
   )
-  const handleLogin = async (event) => {
+  const handleLogin = async event => {
     event.preventDefault()
     try {
-      const user = await axios.post(baseUrl, {email, password}) 
+      const user = await axios.post(baseUrl, { email, password })
       setUser(user)
       setEmail('')
       setPassword('')
-      const type = user.data.type 
+      const type = user.data.type
       setUserType(type)
       setUsername(user.data.username)
       setUserSubjects(user.data.subjects)
@@ -187,8 +230,8 @@ export default function Home(props) {
   return (
     <div>
       {user === null && loginForm()}
-      {user !== null && (userType==='student' ? studentLandingPage() : teacherLandingPage())}
-    
+      {user !== null &&
+        (userType === 'student' ? studentLandingPage() : teacherLandingPage())}
     </div>
   )
 }
