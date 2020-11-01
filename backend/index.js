@@ -5,17 +5,24 @@ const server = http.createServer(app)
 const socket = require('socket.io')
 const io = socket(server)
 const bcrypt = require('bcrypt')
-const User = require('./models/user')
 const bodyParser = require('body-parser')
-const users = {}
+const User = require('./models/user')
+
 var jsonParser = bodyParser.json()
 var urlEncodedParser = bodyParser.urlencoded({ extended: false })
+const users = {}
 const socketToRoom = {}
+const messages = {
+  room1: [],
+  room2: [],
+  room3: [],
+}
 
 io.on('connection', socket => {
-  socket.on('join room', roomID => {
-    if (users[roomID]) { const length = users[roomID].length
-      if (length === 4) {
+  socket.on('join p2p room', roomID => {
+    if (users[roomID]) {
+      const length = users[roomID].length
+      if (length === 6) {
         socket.emit('room full')
         return
       }
@@ -51,6 +58,31 @@ io.on('connection', socket => {
       users[roomID] = room
     }
   })
+
+  /******************************************************************************/
+
+  socket.on('join room', (roomName, callback) => {
+    socket.join(roomName)
+    callback(messages[roomName])
+  })
+
+  socket.on('send message', ({ content, to, sender, chatName }) => {
+    const payload = {
+      content,
+      chatName,
+      sender,
+    }
+    socket.to(to).emit('new message', payload)
+
+    if (messages[chatName]) {
+      messages[chatName].push({ sender, content })
+    }
+  })
+
+  // socket.on('disconnect', () => {
+  //   users = users.filter(usr => usr.id !== socket.id)
+  //   socketIo.emit('new user', users)
+  // })
 })
 
 app.get('/', (request, response) => {
@@ -69,7 +101,7 @@ app.post('/api/users', jsonParser, async (request, response) => {
     email: body.email,
     username: body.username,
     passwordHash,
-    type: 'student'
+    type: 'student',
   })
   const savedUser = await user.save()
   response.json(savedUser)
@@ -77,9 +109,10 @@ app.post('/api/users', jsonParser, async (request, response) => {
 app.post('/api/login', jsonParser, async (request, response) => {
   const body = request.body
   const user = await User.findOne({ email: body.email })
-  const passowordCorrect = user === null ? false : await bcrypt.compare(body.password, user.passwordHash)
+  const passowordCorrect =
+    user === null ? false : await bcrypt.compare(body.password, user.passwordHash)
   if (!(user && passowordCorrect)) {
-    return response.status(401).json({ error: 'invalid username or password '})
+    return response.status(401).json({ error: 'invalid username or password ' })
   }
   response.status(200).send({ username: user.username, email: user.email })
 })
