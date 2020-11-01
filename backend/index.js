@@ -17,6 +17,7 @@ const messages = {
   room1: [],
   room2: [],
   room3: [],
+}
 
 app.use(cors())
 
