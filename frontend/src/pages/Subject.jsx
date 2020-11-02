@@ -5,6 +5,7 @@ import NavBar from '../components/NavBar'
 import ChatBubble from '../components/ChatBubble'
 import VideoPlayer from '../components/VideoPlayer'
 import Whiteboard from '../components/Whiteboard'
+import Present from '../components/Present'
 
 export default function Subject(props) {
   const [active, setActive] = useState('Video')
@@ -131,7 +132,7 @@ export default function Subject(props) {
     if (active === 'Video') return <VideoPlayer {...videoJsOptions} />
     else if (active === 'Whiteboard')
       return <Whiteboard room={props.match.params.subId} socketRef={socketRef} />
-    else if (active === 'Powerpoint') return <div>POWERPOINT</div>
+    else if (active === 'Powerpoint') return <Present/>
   }
 
   return (
