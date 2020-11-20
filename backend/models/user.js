@@ -1,5 +1,5 @@
 const mongoose = require('mongoose')
-const url = 'mongodb+srv://siddharth-s:3012@cluster0.cbsfq.mongodb.net/p2p-app?retryWrites=true&w=majority'
+const url = ''
 mongoose.connect(url, { useNewUrlParser: true, useUnifiedTopology: true, useFindAndModify: false, useCreateIndex: true})
 const uniqueValidator = require('mongoose-unique-validator')
 const userSchema = new mongoose.Schema({
